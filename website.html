@@ -23,29 +23,93 @@
     <!-- Customer View -->
     <div id="customerSection" class="section active">
         <h2>Search for Available Rooms</h2>
-        <label>Check-in Date: <input type="date"></label>
-        <label>Check-out Date: <input type="date"></label>
-        <label>Capacity: <input type="number" min="1"></label>
-        <label>Price Range: <input type="text"></label>
-        <button>Search</button>
+        <form id="searchForm">
+            <label>Check-in Date: <input type="date" id="checkinDate"></label>
+            <label>Check-out Date: <input type="date" id="checkoutDate"></label>
+            <label>Capacity: <input type="number" id="capacity" min="1"></label>
+            
+            <label>Area:
+                <select id="area">
+                    <option value="downtown">Downtown</option>
+                    <option value="suburbs">Suburbs</option>
+                    <option value="beach">Beach</option>
+                </select>
+            </label>
+            
+            <label>Hotel Chain:
+                <select id="hotelChain">
+                    <option value="chain1">Chain 1</option>
+                    <option value="chain2">Chain 2</option>
+                    <option value="chain3">Chain 3</option>
+                </select>
+            </label>
+            
+            <label>Category:
+                <select id="category">
+                    <option value="luxury">Luxury</option>
+                    <option value="budget">Budget</option>
+                    <option value="standard">Standard</option>
+                </select>
+            </label>
+            
+            <label>Price Range: <input type="text" id="priceRange" placeholder="e.g., 100-300"></label>
+            <button type="submit">Search</button>
+        </form>
+
+        <h3>Available Rooms</h3>
+        <div id="availableRooms">
+            <!-- Available rooms will be displayed here -->
+        </div>
     </div>
     
     <!-- Employee View -->
     <div id="employeeSection" class="section">
         <h2>Manage Bookings</h2>
-        <p>Here, employees can mark booked rooms as rented.</p>
-        <button>View Booked Rooms</button>
+        <form id="bookingForm">
+            <label>Booking ID: <input type="text" id="bookingId" required></label>
+            <label>Customer ID: <input type="text" id="customerId" required></label>
+            <label>Check-in Date: <input type="date" id="checkinEmployee"></label>
+            <label>Room ID:
+                <select id="roomEmployee">
+                    <option value="room1">Room 1</option>
+                    <option value="room2">Room 2</option>
+                </select>
+            </label>
+            <button type="submit">Mark as Rented</button>
+        </form>
+
+        <h3>View Booked Rooms</h3>
+        <div id="bookedRooms">
+            <!-- Booked rooms will be displayed here -->
+        </div>
     </div>
     
     <!-- Admin View -->
     <div id="adminSection" class="section">
         <h2>Admin Panel</h2>
-        <p>Admins can create or delete rooms.</p>
-        <button>Add New Room</button>
-        <button>Delete Room</button>
+        <form id="roomManagementForm">
+            <h3>Add a New Room</h3>
+            <label>Room Number: <input type="text" id="roomNumber"></label>
+            <label>Hotel: 
+                <select id="hotelAdmin">
+                    <option value="hotel1">Hotel 1</option>
+                    <option value="hotel2">Hotel 2</option>
+                </select>
+            </label>
+            <label>Room Capacity: <input type="number" id="roomCapacity"></label>
+            <label>Price: <input type="text" id="roomPrice"></label>
+            <button type="submit">Add Room</button>
+        </form>
+        
+        <form id="deleteRoomForm">
+            <h3>Delete Room</h3>
+            <label>Room ID: <input type="text" id="roomIdToDelete"></label>
+            <button type="submit">Delete Room</button>
+        </form>
     </div>
     
     <script>
+        // Switch between sections based on the selected role
         const roleRadios = document.querySelectorAll('input[name="role"]');
         const sections = {
             customer: document.getElementById("customerSection"),
@@ -59,6 +123,67 @@
                 sections[radio.value].classList.add("active");
             });
         });
+
+        // Handle Search for Available Rooms (Customer)
+        document.getElementById("searchForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            // Get values from form inputs
+            const checkinDate = document.getElementById("checkinDate").value;
+            const checkoutDate = document.getElementById("checkoutDate").value;
+            const capacity = document.getElementById("capacity").value;
+            const area = document.getElementById("area").value;
+            const hotelChain = document.getElementById("hotelChain").value;
+            const category = document.getElementById("category").value;
+            const priceRange = document.getElementById("priceRange").value;
+
+            // Here, you'd make an AJAX call to the backend to get available rooms based on the selected criteria.
+            // For now, we'll just simulate it by displaying a message.
+            document.getElementById("availableRooms").innerHTML = `<p>Searching for rooms with the following criteria:</p>
+                                                                  <ul>
+                                                                      <li>Check-in: ${checkinDate}</li>
+                                                                      <li>Check-out: ${checkoutDate}</li>
+                                                                      <li>Capacity: ${capacity}</li>
+                                                                      <li>Area: ${area}</li>
+                                                                      <li>Hotel Chain: ${hotelChain}</li>
+                                                                      <li>Category: ${category}</li>
+                                                                      <li>Price Range: ${priceRange}</li>
+                                                                  </ul>`;
+        });
+
+        // Handle Booking Management (Employee)
+        document.getElementById("bookingForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            const bookingId = document.getElementById("bookingId").value;
+            const customerId = document.getElementById("customerId").value;
+            const checkinEmployee = document.getElementById("checkinEmployee").value;
+            const roomEmployee = document.getElementById("roomEmployee").value;
+
+            // Simulate marking a booking as rented
+            document.getElementById("bookedRooms").innerHTML = `<p>Booking ${bookingId} for Customer ${customerId} is now marked as rented in Room ${roomEmployee}.</p>`;
+        });
+
+        // Handle Admin Room Management
+        document.getElementById("roomManagementForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const roomNumber = document.getElementById("roomNumber").value;
+            const hotelAdmin = document.getElementById("hotelAdmin").value;
+            const roomCapacity = document.getElementById("roomCapacity").value;
+            const roomPrice = document.getElementById("roomPrice").value;
+
+            // Simulate adding a new room to the system
+            alert(`New room added: Room Number: ${roomNumber}, Hotel: ${hotelAdmin}, Capacity: ${roomCapacity}, Price: ${roomPrice}`);
+        });
+
+        document.getElementById("deleteRoomForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const roomIdToDelete = document.getElementById("roomIdToDelete").value;
+
+            // Simulate room deletion
+            alert(`Room with ID ${roomIdToDelete} deleted.`);
+        });
     </script>
-</body>
-</html>
+</body
