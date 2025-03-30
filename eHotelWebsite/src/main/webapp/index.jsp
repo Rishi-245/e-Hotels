@@ -11,12 +11,12 @@
 
 
  <!-- Role Selection -->
- <label for="roleSelect"><strong>Select Role:</strong></label>
- <select id="roleSelect">
-   <option value="customer">Customer</option>
-   <option value="employee">Employee</option>
-   <option value="admin">Admin</option>
- </select>
+ <fieldset>
+   <legend><strong>Select Role:</strong></legend>
+   <label><input type="radio" name="role" value="customer" checked> Customer</label>
+   <label><input type="radio" name="role" value="employee"> Employee</label>
+   <label><input type="radio" name="role" value="admin"> Admin</label>
+ </fieldset>
 
 
  <!-- Customer Section -->
@@ -126,7 +126,42 @@
  <!-- Admin Section -->
  <div class="section" id="adminSection">
    <h2>Admin Panel</h2>
-   <p>Manage hotels, rooms, and staff (to be implemented).</p>
+
+   <!-- Step One: Admin ID Entry -->
+   <form id="adminLoginForm">
+     <label>Enter Admin ID:
+       <input type="text" id="adminIdInput" required />
+     </label>
+     <button type="submit">Enter</button>
+   </form>
+
+   <!-- Admin Dashboard Area -->
+   <div id="adminDashboard" style="display: none; margin-top: 20px;">
+     <p id="adminWelcomeText"></p>
+
+     <label for="adminActionSelect"><strong>Select Management Section:</strong></label>
+     <select id="adminActionSelect">
+       <option value="">-- Select Section --</option>
+       <option value="customers">Manage Customers</option>
+       <option value="employees">Manage Employees</option>
+       <option value="hotels">Manage Hotels</option>
+       <option value="rooms">Manage Rooms</option>
+     </select>
+
+     <div id="adminActionArea" style="margin-top: 20px;"></div>
+     <!-- Room management options (initially hidden) -->
+       <div id="roomManagementOptions" style="display: none;">
+         <p><strong>Choose Room Management Action:</strong></p>
+         <div style="display: flex; gap: 20px;">
+           <label><input type="radio" name="roomAction" value="insert"> Insert Room</label>
+           <label><input type="radio" name="roomAction" value="delete"> Delete Room</label>
+           <label><input type="radio" name="roomAction" value="update"> Update Room</label>
+         </div>
+       </div>
+
+       <!-- Placeholder where the selected form (insert/delete/update) will go -->
+       <div id="roomActionFormArea" style="margin-top: 20px;"></div>
+   </div>
  </div>
 
 

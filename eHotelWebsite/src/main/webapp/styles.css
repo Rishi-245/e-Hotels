@@ -37,3 +37,6 @@ body {
    button:hover {
      background-color: #0056b3;
    }
+   fieldset label {
+     margin-right: 20px;
+   }

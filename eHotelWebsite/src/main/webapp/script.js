@@ -1,15 +1,16 @@
-const roleSelect = document.getElementById("roleSelect");
-   const sections = {
-     customer: document.getElementById("customerSection"),
-     employee: document.getElementById("employeeSection"),
-     admin: document.getElementById("adminSection")
-   };
+    const sections = {
+      customer: document.getElementById("customerSection"),
+      employee: document.getElementById("employeeSection"),
+      admin: document.getElementById("adminSection")
+    };
 
-
-   roleSelect.addEventListener("change", () => {
-     Object.values(sections).forEach(s => s.classList.remove("active"));
-     sections[roleSelect.value].classList.add("active");
-   });
+    // Radio role selection logic
+    document.querySelectorAll('input[name="role"]').forEach(radio => {
+      radio.addEventListener("change", function () {
+        Object.values(sections).forEach(s => s.classList.remove("active"));
+        sections[this.value].classList.add("active");
+      });
+    });
 
 
    document.getElementById("regDate").value = new Date().toISOString().split("T")[0];
@@ -558,3 +559,248 @@ const roleSelect = document.getElementById("roleSelect");
 
             rentRoom();
       }
+
+     const validAdmins = [
+       { id: "admin001", name: "Alice Smith" },
+       { id: "admin002", name: "Bob Johnson" }
+     ];
+
+    document.getElementById("adminLoginForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const adminId = document.getElementById("adminIdInput").value.trim();
+      const admin = validAdmins.find(a => a.id === adminId);
+
+      if (!admin) {
+        document.getElementById("adminDashboard").style.display = "none";
+        alert("Admin ID not found.");
+        return;
+      }
+
+      document.getElementById("adminWelcomeText").textContent = `Welcome, ${admin.name}!`;
+      document.getElementById("adminDashboard").style.display = "block";
+      document.getElementById("adminActionArea").innerHTML = ""; // Clear previous
+    });
+
+    document.getElementById("adminActionSelect").addEventListener("change", function () {
+      const selected = this.value;
+      const area = document.getElementById("adminActionArea");
+
+      area.innerHTML = ""; // Clear previous content
+
+      if (!selected) return;
+
+      if (selected === "rooms") {
+        area.innerHTML = `
+          <div id="roomManagementOptions" style="margin-top: 10px;">
+            <p><strong>Choose Room Management Action:</strong></p>
+            <div style="display: flex; gap: 20px;">
+              <label><input type="radio" name="roomAction" value="insert"> Insert Room</label>
+              <label><input type="radio" name="roomAction" value="delete"> Delete Room</label>
+              <label><input type="radio" name="roomAction" value="update"> Update Room</label>
+            </div>
+            <div id="roomActionFormArea" style="margin-top: 20px;"></div>
+          </div>
+        `;
+
+        document.querySelectorAll('input[name="roomAction"]').forEach(radio => {
+          radio.addEventListener('change', function () {
+            const formArea = document.getElementById("roomActionFormArea");
+            formArea.innerHTML = "";
+
+            if (this.value === "insert") {
+                showInsertRoomForm();
+            }
+
+            if (this.value === "update") {
+                showUpdateRoomForm();
+            }
+
+            if (this.value === "delete") {
+              if (rooms.length === 0) {
+                formArea.innerHTML = "<p>No rooms available for deletion.</p>";
+                return;
+              }
+
+              let tableHTML = `
+                <table border="1" cellpadding="8" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Hotel ID</th>
+                      <th>Room Number</th>
+                      <th>Extendable</th>
+                      <th>Price</th>
+                      <th>Capacity</th>
+                      <th>View Type</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+              `;
+
+              rooms.forEach(room => {
+                const uniqueId = `roomRow-${room.hotelId}-${room.room}`;
+                tableHTML += `
+                  <tr id="${uniqueId}">
+                    <td>${room.hotelId}</td>
+                    <td>${room.room}</td>
+                    <td>${room.extendable ? "Yes" : "No"}</td>
+                    <td>$${room.price}</td>
+                    <td>${room.capacity}</td>
+                    <td>${room.view_type ?? "N/A"}</td>
+                    <td><button onclick="deleteRoom('${room.hotelId}', '${room.room}')">Delete</button></td>
+                  </tr>
+                `;
+              });
+
+              tableHTML += "</tbody></table>";
+              formArea.innerHTML = tableHTML;
+            }
+          });
+        });
+      } else {
+        area.innerHTML = `<h3>${selected.charAt(0).toUpperCase() + selected.slice(1)} Management</h3>
+          <p>Insert / Delete / Update functionality coming soon for <strong>${selected}</strong>.</p>`;
+      }
+    });
+
+    // Delete function (mock version)
+    function deleteRoom(hotelId, roomNumber) {
+      const index = rooms.findIndex(r => r.hotelId === hotelId && r.room === roomNumber);
+      if (index === -1) {
+        alert("Room not found.");
+        return;
+      }
+
+      const confirmed = confirm(`Are you sure you want to delete Room ${roomNumber} in Hotel ${hotelId}?`);
+      if (confirmed) {
+        rooms.splice(index, 1);
+        const row = document.getElementById(`roomRow-${hotelId}-${roomNumber}`);
+        if (row) row.remove();
+        alert("Room deleted successfully.");
+      }
+    }
+
+
+    // Insert Room Form Logic
+    function showInsertRoomForm() {
+      const formArea = document.getElementById("roomActionFormArea");
+      formArea.innerHTML = `
+        <h4>Insert New Room</h4>
+        <form id="insertRoomForm">
+          <label>Hotel ID: <input type="text" id="insertHotelId" required></label><br>
+          <label>Room Number: <input type="text" id="insertRoomNumber" required></label><br>
+          <label>Extendable:
+            <select id="insertExtendable" required>
+              <option value="">--Select--</option>
+              <option value="true">True</option>
+              <option value="false">False</option>
+            </select>
+          </label><br>
+          <label>Price: <input type="number" id="insertPrice" required></label><br>
+          <label>Capacity: <input type="number" id="insertCapacity" required></label><br>
+          <label>View Type: <input type="text" id="insertViewType" required></label><br>
+          <button type="submit">Insert Room</button>
+        </form>
+        <div id="insertRoomMessage" style="margin-top: 10px;"></div>
+      `;
+
+      document.getElementById("insertRoomForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const hotelId = document.getElementById("insertHotelId").value.trim();
+        const roomNumber = document.getElementById("insertRoomNumber").value.trim();
+        const extendable = document.getElementById("insertExtendable").value === "true";
+        const price = parseFloat(document.getElementById("insertPrice").value);
+        const capacity = parseInt(document.getElementById("insertCapacity").value);
+        const viewType = document.getElementById("insertViewType").value.trim();
+
+        if (!hotelId || !roomNumber || isNaN(price) || isNaN(capacity) || !viewType) {
+          document.getElementById("insertRoomMessage").textContent = "Please fill all fields correctly.";
+          return;
+        }
+
+        // Simulated DB logic
+        const newRoom = {
+          hotelId,
+          room: roomNumber,
+          extendable,
+          price,
+          capacity,
+          viewType
+        };
+
+        console.log("New Room to Insert:", newRoom);
+        document.getElementById("insertRoomMessage").textContent =
+          `Room ${roomNumber} successfully inserted for Hotel ID ${hotelId}.`;
+
+        this.reset();
+      });
+    }
+
+    function handleUpdateRoom() {
+      const hotelId = document.getElementById("updateHotelId").value.trim();
+      const roomNumber = document.getElementById("updateRoomNumber").value.trim();
+      const extendable = document.getElementById("updateExtendable").value;
+      const price = document.getElementById("updatePrice").value.trim();
+      const capacity = document.getElementById("updateCapacity").value.trim();
+      const viewType = document.getElementById("updateViewType").value.trim();
+
+      if (!hotelId || !roomNumber) {
+        alert("Hotel ID and Room Number are required.");
+        return;
+      }
+
+      const room = rooms.find(r => r.hotelId === hotelId && r.room === roomNumber);
+      if (!room) {
+        alert("Room not found.");
+        return;
+      }
+
+      if (extendable !== "") room.extendable = (extendable === "true");
+      if (price !== "") room.price = parseFloat(price);
+      if (capacity !== "") room.capacity = parseInt(capacity);
+      if (viewType !== "") room.view_type = viewType;
+
+      document.getElementById("updateRoomMessage").textContent =
+        `Room ${roomNumber} at Hotel ${hotelId} has been updated.`;
+
+      console.log("Updated Room:", room);
+    }
+
+
+    function showUpdateRoomForm() {
+      const formArea = document.getElementById("roomActionFormArea");
+
+      formArea.innerHTML = `
+        <h4>Update Room Details</h4>
+        <form id="updateRoomForm">
+          <label>Hotel ID: <input type="text" id="updateHotelId" required></label><br>
+          <label>Room Number: <input type="text" id="updateRoomNumber" required></label><br>
+          <p><em>Leave any field blank below if you don't want to update it.</em></p>
+          <label>Extendable:
+            <select id="updateExtendable">
+              <option value="">--Leave Unchanged--</option>
+              <option value="true">True</option>
+              <option value="false">False</option>
+            </select>
+          </label><br>
+          <label>Price: <input type="number" id="updatePrice" min="0"></label><br>
+          <label>Capacity: <input type="number" id="updateCapacity" min="1"></label><br>
+          <label>View Type: <input type="text" id="updateViewType"></label><br>
+          <button type="submit">Update Room</button>
+        </form>
+        <div id="updateRoomMessage" style="margin-top: 10px;"></div>
+      `;
+
+      document.getElementById("updateRoomForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+        handleUpdateRoom(); // This is what triggers the logic
+      });
+    }
+
+
+
+
+
+
+
