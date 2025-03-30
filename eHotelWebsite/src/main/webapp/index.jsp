@@ -39,26 +39,27 @@
      <label>Current Date: <input type="date" id="regDate" value="" required></label>
 
 
-     <h2>Booking Info</h2>
+     <h2>Renting Info</h2>
      <label>Start Date: <input type="date" id="checkinDate" required></label>
      <label>End Date: <input type="date" id="checkoutDate" required></label>
+
+     <label>Hotel Chain:
+        <select id="hotelChain">
+          <option value="">--Select Chain--</option>
+        </select>
+     </label>
+
      <label>City:
        <select id="city">
          <option value="">--Select City--</option>
        </select>
      </label>
 
-     <label>Hotel Chain:
-       <select id="hotelChain">
-         <option value="">--Select Chain--</option>
-       </select>
+     <label>Number of Rooms in Hotel (minimum):
+        <input type="number" id="numRooms" min="1" placeholder="e.g., 10">
      </label>
 
-     <label>Room Capacity:
-       <input type="number" id="roomCapacity" min="1" placeholder="Enter desired capacity" />
-     </label>
-
-     <label>Room Rating (1-5):
+     <label>Hotel Rating (1-5):
        <select id="category" min="1" max="5">
          <option value="">--Select Rating--</option>
          <option value="1">1</option>
@@ -68,7 +69,13 @@
          <option value="5">5</option>
        </select>
      </label>
+
+     <label>Room Capacity:
+        <input type="number" id="roomCapacity" min="1" placeholder="Enter desired capacity" />
+     </label>
+
      <label>Budget (Price Per Night Range): <input type="text" id="priceRange"></label>
+
      <label>Extendable:
        <select id="extendableOption">
          <option value="">--Select--</option>
@@ -77,9 +84,12 @@
        </select>
      </label>
 
-     <label>Number of Rooms in Hotel (minimum):
-       <input type="number" id="numRooms" min="1" placeholder="e.g., 10">
-     </label>
+     <label>View Type:
+        <select id="extendableOption">
+            <option value="">--Select--</option>
+            <option value="true">Sea View</option>
+            <option value="true">Mountain View</option>
+        </select>
 
      <input type="hidden" id="selectedRoomNumber">
      <input type="hidden" id="selectedHotelId">

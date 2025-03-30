@@ -657,6 +657,240 @@
             }
           });
         });
+      } else if (selected === "customers") {
+            area.innerHTML = `
+                <div id="customerManagementOptions" style="margin-top: 10px;">
+                  <p><strong>Choose Customer Management Action:</strong></p>
+                  <div style="display: flex; gap: 20px;">
+                    <label><input type="radio" name="customerAction" value="insert"> Insert Customer</label>
+                    <label><input type="radio" name="customerAction" value="delete"> Delete Customer</label>
+                    <label><input type="radio" name="customerAction" value="update"> Update Customer</label>
+                  </div>
+                  <div id="customerActionFormArea" style="margin-top: 20px;"></div>
+                </div>
+              `;
+
+              document.querySelectorAll('input[name="customerAction"]').forEach(radio => {
+                radio.addEventListener('change', function () {
+                  const formArea = document.getElementById("customerActionFormArea");
+                  formArea.innerHTML = "";
+
+                  if (this.value === "insert") {
+                    formArea.innerHTML = `
+                      <h4>Insert New Customer</h4>
+                      <form id="insertCustomerForm">
+                        <label>Customer ID: <input type="text" required></label><br>
+                        <label>First Name: <input type="text" required></label><br>
+                        <label>Middle Name: <input type="text"></label><br>
+                        <label>Last Name: <input type="text" required></label><br>
+                        <label>Address: <input type="text" required></label><br>
+                        <label>Type ID: <input type="text" required></label><br>
+                        <label>Registration Date: <input type="date" required></label><br>
+                        <button type="submit">Insert Customer</button>
+                      </form>
+                    `;
+
+                    document.getElementById("insertCustomerForm").addEventListener("submit", function(e) {
+                        e.preventDefault();
+                        // You can now handle insert logic here...
+                        alert("Customer inserted (fake alert for now)"); /////////////////////////////////////////////////////
+                     });
+                  }
+
+                  if (this.value === "delete") {
+                    formArea.innerHTML = `
+                      <h4>Delete Customer</h4>
+                      <form id="deleteCustomerForm">
+                        <label>Customer ID: <input type="text" required></label><br>
+                        <button type="submit">Delete Customer</button>
+                      </form>
+                    `;
+
+                    document.getElementById("deleteCustomerForm").addEventListener("submit", function(e) {
+                        e.preventDefault();
+                        // You can now handle insert logic here...
+                        alert("Customer deleted (fake alert for now)"); /////////////////////////////////////////////////////
+                    });
+                  }
+
+                  if (this.value === "update") {
+                    formArea.innerHTML = `
+                      <h4>Update Customer</h4>
+                      <form id="updateCustomerForm">
+                        <label>Customer ID: <input type="text" required></label><br>
+                        <p><em>Leave any field blank to keep it unchanged.</em></p>
+                        <label>First Name: <input type="text"></label><br>
+                        <label>Middle Name: <input type="text"></label><br>
+                        <label>Last Name: <input type="text"></label><br>
+                        <label>Address: <input type="text"></label><br>
+                        <label>Registration Date: <input type="date"></label><br>
+                        <button type="submit">Update Customer</button>
+                      </form>
+                    `;
+
+                    document.getElementById("updateCustomerForm").addEventListener("submit", function(e) {
+                        e.preventDefault();
+                        // You can now handle insert logic here...
+                        alert("Customer updated (fake alert for now)"); /////////////////////////////////////////////////////
+                     });
+                  }
+                });
+              });
+      } else if (selected === "employees") {
+        area.innerHTML = `
+            <div id="employeeManagementOptions" style="margin-top: 10px;">
+              <p><strong>Choose Employee Management Action:</strong></p>
+              <div style="display: flex; gap: 20px;">
+                <label><input type="radio" name="employeeAction" value="insert"> Insert Employee</label>
+                <label><input type="radio" name="employeeAction" value="delete"> Delete Employee</label>
+                <label><input type="radio" name="employeeAction" value="update"> Update Employee</label>
+              </div>
+              <div id="employeeActionFormArea" style="margin-top: 20px;"></div>
+            </div>
+          `;
+
+          document.querySelectorAll('input[name="employeeAction"]').forEach(radio => {
+            radio.addEventListener('change', function () {
+              const formArea = document.getElementById("employeeActionFormArea");
+              formArea.innerHTML = "";
+
+              // INSERT EMPLOYEE
+              if (this.value === "insert") {
+                formArea.innerHTML = `
+                  <h4>Insert New Employee</h4>
+                  <form id="insertEmployeeForm">
+                    <label>SIN: <input type="text" required></label><br>
+                    <label>Hotel ID: <input type="text" required></label><br>
+                    <label>First Name: <input type="text" required></label><br>
+                    <label>Middle Name: <input type="text"></label><br>
+                    <label>Last Name: <input type="text" required></label><br>
+                    <label>Address: <input type="text" required></label><br>
+                    <label>Role: <input type="text" required></label><br>
+                    <button type="submit">Insert Employee</button>
+                  </form>
+                `;
+
+                document.getElementById("insertEmployeeForm").addEventListener("submit", function (e) {
+                  e.preventDefault();
+                  alert("Employee inserted (mock alert)");
+                });
+              }
+
+              // DELETE EMPLOYEE
+              if (this.value === "delete") {
+                formArea.innerHTML = `
+                  <h4>Delete Employee</h4>
+                  <form id="deleteEmployeeForm">
+                    <label>SIN: <input type="text" required></label><br>
+                    <button type="submit">Delete Employee</button>
+                  </form>
+                `;
+
+                document.getElementById("deleteEmployeeForm").addEventListener("submit", function (e) {
+                  e.preventDefault();
+                  alert("Employee deleted (mock alert)");
+                });
+              }
+
+              // UPDATE EMPLOYEE
+              if (this.value === "update") {
+                formArea.innerHTML = `
+                  <h4>Update Employee</h4>
+                  <form id="updateEmployeeForm">
+                    <label>SIN: <input type="text" required></label><br>
+                    <p><em>Leave any field blank to keep it unchanged.</em></p>
+                    <label>Hotel ID: <input type="text"></label><br>
+                    <label>First Name: <input type="text"></label><br>
+                    <label>Middle Name: <input type="text"></label><br>
+                    <label>Last Name: <input type="text"></label><br>
+                    <label>Address: <input type="text"></label><br>
+                    <label>Role: <input type="text"></label><br>
+                    <button type="submit">Update Employee</button>
+                  </form>
+                `;
+
+                document.getElementById("updateEmployeeForm").addEventListener("submit", function (e) {
+                  e.preventDefault();
+                  alert("Employee updated (mock alert)");
+                });
+              }
+            });
+          });
+      } else if (selected === "hotels") {
+        area.innerHTML = `
+            <div id="hotelManagementOptions" style="margin-top: 10px;">
+              <p><strong>Choose Hotel Management Action:</strong></p>
+              <div style="display: flex; gap: 20px;">
+                <label><input type="radio" name="hotelAction" value="insert"> Insert Hotel</label>
+                <label><input type="radio" name="hotelAction" value="delete"> Delete Hotel</label>
+                <label><input type="radio" name="hotelAction" value="update"> Update Hotel</label>
+              </div>
+              <div id="hotelActionFormArea" style="margin-top: 20px;"></div>
+            </div>
+          `;
+
+          document.querySelectorAll('input[name="hotelAction"]').forEach(radio => {
+            radio.addEventListener('change', function () {
+              const formArea = document.getElementById("hotelActionFormArea");
+              formArea.innerHTML = "";
+
+              if (this.value === "insert") {
+                formArea.innerHTML = `
+                  <h4>Insert New Hotel</h4>
+                  <form id="insertHotelForm">
+                    <label>Hotel ID: <input type="text" required></label><br>
+                    <label>Chain ID: <input type="text" required></label><br>
+                    <label>Category: <input type="text" required></label><br>
+                    <label>Number of Rooms: <input type="number" required></label><br>
+                    <label>Address: <input type="text" required></label><br>
+                    <label>Email: <input type="email" required></label><br>
+                    <button type="submit">Insert Hotel</button>
+                  </form>
+                `;
+
+                document.getElementById("insertHotelForm").addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    alert("Hotel inserted (mock alert)");
+                });
+              }
+
+              if (this.value === "delete") {
+                formArea.innerHTML = `
+                  <h4>Delete Hotel</h4>
+                  <form id="deleteHotelForm">
+                    <label>Hotel ID: <input type="text" required></label><br>
+                    <button type="submit">Delete Hotel</button>
+                  </form>
+                `;
+
+                document.getElementById("deleteHotelForm").addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    alert("Hotel deleted (mock alert)");
+                });
+              }
+
+              if (this.value === "update") {
+                formArea.innerHTML = `
+                  <h4>Update Hotel</h4>
+                  <form id="updateHotelForm">
+                    <label>Hotel ID: <input type="text" required></label><br>
+                    <p><em>Leave any field blank to keep it unchanged.</em></p>
+                    <label>Chain ID: <input type="text"></label><br>
+                    <label>Category: <input type="text"></label><br>
+                    <label>Number of Rooms: <input type="number"></label><br>
+                    <label>Address: <input type="text"></label><br>
+                    <label>Email: <input type="email"></label><br>
+                    <button type="submit">Update Hotel</button>
+                  </form>
+                `;
+
+                document.getElementById("updateHotelForm").addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    alert("Hotel updated (mock alert)");
+                });
+              }
+            });
+          });
       } else {
         area.innerHTML = `<h3>${selected.charAt(0).toUpperCase() + selected.slice(1)} Management</h3>
           <p>Insert / Delete / Update functionality coming soon for <strong>${selected}</strong>.</p>`;
@@ -797,8 +1031,6 @@
         handleUpdateRoom(); // This is what triggers the logic
       });
     }
-
-
 
 
 
