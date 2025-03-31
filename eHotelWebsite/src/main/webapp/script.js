@@ -723,6 +723,7 @@
                         <label>Middle Name: <input type="text"></label><br>
                         <label>Last Name: <input type="text"></label><br>
                         <label>Address: <input type="text"></label><br>
+                        <label>Type ID: <input type="text"></label><br>
                         <label>Registration Date: <input type="date"></label><br>
                         <button type="submit">Update Customer</button>
                       </form>
