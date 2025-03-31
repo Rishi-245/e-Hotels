@@ -14,6 +14,8 @@ public class BookingService {
      * @return List of bookings from database
      * @throws Exception when trying to connect to database
      */
+
+
     public List<Booking> getBookings() throws Exception {
         // sql query
         String sql = "SELECT * FROM Booking";
@@ -65,6 +67,46 @@ public class BookingService {
             throw new Exception(e.getMessage());
         }
     }
+    public String updateBooking(String booking_id) throws Exception {
+        Connection con = null;
+        String message = "";
+
+        // sql query
+        String sql = "UPDATE Booking SET status = 'Confirmed' WHERE booking_id = ?";
+//        "UPDATE students SET name=" + student.getName().toString() +", surname=" +
+
+        // connection object
+        ConnectionDB db = new ConnectionDB();
+
+        // try connect to database, catch any exceptions
+        try {
+            // get connection
+            con = db.getConnection();
+
+            // prepare the statement
+            PreparedStatement stmt = con.prepareStatement(sql);
+
+            // set every ? of statement
+            stmt.setString(1, booking_id);
+
+            // execute the query
+            stmt.executeUpdate();
+
+            // close the statement
+            stmt.close();
+
+        } catch (Exception e) {
+            message = "Error while updating booking: " + e.getMessage();
+
+        } finally {
+            if (con != null) con.close();
+            if (message.equals("")) message = "booking successfully updated!";
+        }
+
+        // return respective message
+        return message;
+    }
+
     /*
     public String deleteBooking(int booking_id) throws Exception {
         Connection con = null;

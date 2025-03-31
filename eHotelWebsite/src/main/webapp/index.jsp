@@ -1,3 +1,58 @@
+<%@ page import="java.util.List" %>
+<%@ page import="com.eHotels.Booking" %>
+<%@ page import="com.eHotels.BookingService" %>
+<%@ page import="com.eHotels.Employee" %>
+<%@ page import="com.eHotels.EmployeeService" %>
+<%@ page import="com.eHotels.Room" %>
+<%@ page import="com.eHotels.RoomService" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java"%>
+<%@ page import="java.util.ArrayList" %>
+
+<%
+    // retrieve employee ID from form submission
+    String employeeId = request.getParameter("employeeId");
+    String bookingType = request.getParameter("bookingType");
+
+    Employee employee = null;
+    List<Employee> employees = new EmployeeService().getEmployees(); // Fetch all employees
+    for (Employee emp : employees) {
+        if (emp.getSIN().equals(employeeId)) {
+            employee = emp;
+            break;
+        }
+    }
+
+    // List to store pending bookings (filtered by hotel)
+    List<Booking> pendingBookings = new ArrayList<>();
+    if (employee != null) {
+        BookingService bookingService = new BookingService();
+        List<Booking> allBookings = bookingService.getBookings();
+
+        for (Booking booking : allBookings) {
+            if ("Pending".equalsIgnoreCase(booking.getStatus()) && booking.getHotelID() == employee.getHotelID()) {
+                pendingBookings.add(booking);
+            }
+        }
+    }
+
+    // Handle In-Person Renting Form Submission
+    List<Room> availableRooms = new ArrayList<>();
+    if (bookingType != null && bookingType.equals("inperson")) {
+        String budgetStr = request.getParameter("ipBudget");
+        double budget = budgetStr != null && !budgetStr.isEmpty() ? Double.parseDouble(budgetStr) : -1;
+
+        RoomService roomService = new RoomService();
+        List<Room> allRooms = roomService.getRooms();
+
+        for (Room room : allRooms) {
+            if (room.getHotelID() == employee.getHotelID() && (budget == -1 || room.getPrice() <= budget)) {
+                availableRooms.add(room);
+            }
+        }
+    }
+
+%>
+
 <!DOCTYPE html>
 <html lang="en">
 <link rel="stylesheet" href="styles.css">
@@ -21,82 +76,7 @@
 
  <!-- Customer Section -->
  <div class="section active" id="customerSection">
-   <h2>Customer Info</h2>
-   <form id="searchForm">
-     <label>First Name: <input type="text" id="fName" required></label>
-     <label>Middle Name (optional): <input type="text" id="mName"></label>
-     <label>Last Name: <input type="text" id="lName" required></label>
-     <label>Home Address: <input type="text" id="address" required></label>
-     <label>ID Type:
-       <select id="typeId" required>
-         <option value="">--Select ID Type--</option>
-         <option value="SSN">SSN</option>
-         <option value="SIN">SIN</option>
-         <option value="Driving License">Driving License</option>
-       </select>
-     </label>
-     <label>Current Date: <input type="date" id="regDate" value="" required></label>
-
-
-     <h2>Booking Info</h2>
-     <label>Start Date: <input type="date" id="checkinDate" required></label>
-     <label>End Date: <input type="date" id="checkoutDate" required></label>
-
-     <label>Hotel Chain:
-        <select id="hotelChain">
-          <option value="">--Select Chain--</option>
-        </select>
-     </label>
-
-     <label>City:
-       <select id="city">
-         <option value="">--Select City--</option>
-       </select>
-     </label>
-
-     <label>Number of Rooms in Hotel (minimum):
-        <input type="number" id="numRooms" min="1" placeholder="e.g., 10">
-     </label>
-
-     <label>Hotel Rating (1-5):
-       <select id="category" min="1" max="5">
-         <option value="">--Select Rating--</option>
-         <option value="1">1</option>
-         <option value="2">2</option>
-         <option value="3">3</option>
-         <option value="4">4</option>
-         <option value="5">5</option>
-       </select>
-     </label>
-
-     <label>Room Capacity:
-        <input type="number" id="roomCapacity" min="1" placeholder="Enter desired capacity" />
-     </label>
-
-     <label>Budget (Price Per Night Range): <input type="text" id="priceRange"></label>
-
-     <label>Extendable:
-       <select id="extendableOption">
-         <option value="">--Select--</option>
-         <option value="true">True</option>
-         <option value="false">False</option>
-       </select>
-     </label>
-
-     <label>View Type:
-        <select id="extendableOption">
-            <option value="">--Select--</option>
-            <option value="true">Sea View</option>
-            <option value="true">Mountain View</option>
-        </select>
-
-     <input type="hidden" id="selectedRoomNumber">
-     <input type="hidden" id="selectedHotelId">
-
-
-     <button type="submit">Search for Rooms</button>
-   </form>
-   <div id="availableRooms"></div>
+     <jsp:include page="customerSection.jsp" />
  </div>
 
 
@@ -104,31 +84,119 @@
  <div class="section" id="employeeSection">
    <h2>Employee Panel</h2>
 
-
-   <!-- Step One: Employee ID Entry -->
-   <form id="employeeLoginForm">
-     <label>Enter Employee ID:
-       <input type="text" id="employeeIdInput" required />
-     </label>
-     <button type="submit">Enter</button>
-   </form>
-
-
-   <div id="bookingTypeSelector" style="display: none; margin-top: 20px;">
-         <label for="bookingType"><strong>Select Action Type:</strong></label>
-         <select id="bookingType">
-           <option value="">--Select--</option>
-           <option value="online">Online Booking</option>
-           <option value="inperson">In-Person Renting</option>
-         </select>
-      </div>
+    <!-- Step 1: Employee Login -->
+    <form method="post">
+        <label>Enter Employee ID:
+            <input type="text" name="employeeId" required />
+        </label>
+        <button type="submit">Enter</button>
+    </form>
 
 
-   <!-- Hidden by default: appears after login -->
-   <div id="pendingBookingsSection" style="display: none; margin-top: 30px;">
-     <h3>Pending Bookings</h3>
-     <p>(This section will later list bookings ready for check-in.)</p>
-   </div>
+    <% if (employee != null) { %>
+        <p>Logged in as <strong><%= employee.getFirstName() %> <%= employee.getLastName() %></strong>
+        (Role: <%= employee.getRole() %>) at Hotel ID: <%= employee.getHotelID() %></p>
+
+        <!-- Step 2: Booking Type Selection -->
+        <form method="post">
+            <input type="hidden" name="employeeId" value="<%= employeeId %>" />
+            <label><strong>Select Action Type:</strong></label>
+            <select name="bookingType" onchange="this.form.submit()">
+                <option value="">--Select--</option>
+                <option value="online" <%= "online".equals(bookingType) ? "selected" : "" %>>Online Booking</option>
+                <option value="inperson" <%= "inperson".equals(bookingType) ? "selected" : "" %>>In-Person Renting</option>
+            </select>
+        </form>
+
+        <!-- Step 3: Pending Bookings -->
+        <% if ("online".equals(bookingType)) { %>
+            <div id="pendingBookingsSection">
+                <h3>Pending Bookings</h3>
+                <% if (!pendingBookings.isEmpty()) { %>
+                    <table border="1" cellpadding="8" cellspacing="0" style="margin-top:10px; width:100%; max-width:800px;">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Customer ID</th>
+                                <th>Room</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for (Booking booking : pendingBookings) { %>
+                                <tr>
+                                    <td><%= booking.getBookingID() %></td>
+                                    <td><%= booking.getCustomerID() %></td>
+                                    <td><%= booking.getRoomNumber() %></td>
+                                    <td><%= booking.getStartDate() %></td>
+                                    <td><%= booking.getEndDate() %></td>
+                                    <td><%= booking.getStatus() %></td>
+                                    <td>
+                                        <form method="post" action="confirmBooking.jsp">
+                                            <input type="hidden" name="bookingId" value="<%= booking.getBookingID() %>">
+                                            <input type="hidden" name="employeeId" value="<%= employeeId %>">
+                                            <button type="submit">Confirm</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                <% } else { %>
+                    <p>No pending bookings at this time.</p>
+                <% } %>
+            </div>
+        <% } %>
+
+        <!-- Step 4: In-Person Renting -->
+        <% if ("inperson".equals(bookingType)) { %>
+            <div id="inPersonBookingSection">
+                <h3>In-Person Renting</h3>
+                <form method="post">
+                    <input type="hidden" name="employeeId" value="<%= employeeId %>" />
+                    <input type="hidden" name="bookingType" value="inperson" />
+
+                    <label>First Name: <input type="text" name="ipFirstName" required></label>
+                    <label>Middle Name (optional): <input type="text" name="ipMiddleName"></label>
+                    <label>Last Name: <input type="text" name="ipLastName" required></label>
+                    <label>Home Address: <input type="text" name="ipAddress" required></label>
+
+                    <label>ID Type:
+                        <select name="ipIdType" required>
+                            <option value="">--Select ID Type--</option>
+                            <option value="SSN">SSN</option>
+                            <option value="SIN">SIN</option>
+                            <option value="Driving License">Driving License</option>
+                        </select>
+                    </label>
+                    <label>Enter ID #: <input type="text" name="ipIdNumber" required></label>
+
+                    <label>Current Date: <input type="date" name="ipDate" value="<%= new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date()) %>" required></label>
+                    <label>End Date: <input type="date" name="ipEndDate" required></label>
+
+                    <label>Budget (Max Price Per Night): <input type="number" name="ipBudget" min="0"></label>
+                    <button type="submit">Search for Rooms</button>
+                </form>
+
+                <!-- Available Rooms -->
+                <% if (!availableRooms.isEmpty()) { %>
+                    <h4>Available Rooms in Your Hotel</h4>
+                    <ul>
+                        <% for (Room room : availableRooms) { %>
+                            <li>Room <%= room.getRoomNumber() %> - $<%= room.getPrice() %>/night</li>
+                        <% } %>
+                    </ul>
+                <% } else if (request.getParameter("ipBudget") != null) { %>
+                    <p>No rooms available under the selected budget.</p>
+                <% } %>
+            </div>
+        <% } %>
+    <% } else if (employeeId != null) { %>
+        <p style="color: red;">Invalid Employee ID. Please try again.</p>
+    <% } %>
  </div>
 
 
