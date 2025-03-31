@@ -407,8 +407,6 @@
              <label>Enter ID #: <input type="text" id="ipIdNumber" required></label>
              <label>Current Date: <input type="date" id="ipDate" required></label>
 
-
-             <h4>Booking Info</h4>
              <label>End Date: <input type="date" id="ipEndDate" required></label>
              <label>Budget (Max Price Per Night): <input type="number" id="ipBudget" min="0" ></label>
 
@@ -1032,7 +1030,6 @@
         handleUpdateRoom(); // This is what triggers the logic
       });
     }
-
 
 
 

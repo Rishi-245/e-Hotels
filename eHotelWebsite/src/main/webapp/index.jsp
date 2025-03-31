@@ -35,11 +35,10 @@
          <option value="Driving License">Driving License</option>
        </select>
      </label>
-     <label>Enter ID #: <input type="text" id="sin" required></label>
      <label>Current Date: <input type="date" id="regDate" value="" required></label>
 
 
-     <h2>Renting Info</h2>
+     <h2>Booking Info</h2>
      <label>Start Date: <input type="date" id="checkinDate" required></label>
      <label>End Date: <input type="date" id="checkoutDate" required></label>
 
@@ -116,7 +115,7 @@
 
 
    <div id="bookingTypeSelector" style="display: none; margin-top: 20px;">
-         <label for="bookingType"><strong>Select Booking Type:</strong></label>
+         <label for="bookingType"><strong>Select Action Type:</strong></label>
          <select id="bookingType">
            <option value="">--Select--</option>
            <option value="online">Online Booking</option>
@@ -214,4 +213,3 @@
 <script src="script.js"></script>
 </body>
 </html>
-
