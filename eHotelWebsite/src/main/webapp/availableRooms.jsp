@@ -79,14 +79,13 @@
     <% if (availableRooms != null && !availableRooms.isEmpty()) { %>
         <div id="roomSearchSection">
             <h4>Available Rooms in Your Hotel</h4>
-            <form method="get" action="availableBookings.jsp">
+            <form method="get">
                 <label>Current Date:
                     <input type="date" name="ipDate" value="<%= new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date()) %>" required>
                 </label>
                 <label>End Date:
                     <input type="date" name="ipEndDate" required>
                 </label>
-                <button type="submit">Search</button>
             </form>
             <table border="1" cellpadding="8" cellspacing="0" style="margin-top:10px; width:100%; max-width:800px;">
                 <thead>
