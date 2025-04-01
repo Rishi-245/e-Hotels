@@ -32,7 +32,7 @@
             dropdown.addEventListener("change", function () {
             let selectedPage = dropdown.value;
             if (selectedPage) {
-                window.location.href = selectedPage;  // 🔁 Redirect directly to JSP page
+                window.location.href = selectedPage;  // Redirect directly to JSP page
             }
         });
     });

@@ -84,8 +84,19 @@
  <div class="section" id="employeeSection">
    <h2>Employee Panel</h2>
 
+   <%
+       String role = request.getParameter("role");
+       if (role == null) role = "customer";
+   %>
+   <script>
+       document.addEventListener("DOMContentLoaded", function () {
+           document.querySelectorAll(".section").forEach(section => section.classList.remove("active"));
+           document.getElementById("<%= role %>Section").classList.add("active");
+       });
+   </script>
+
     <!-- Step 1: Employee Login -->
-    <form method="post">
+    <form method="post" action="index.jsp?role=employee">
         <label>Enter Employee ID:
             <input type="text" name="employeeId" required />
         </label>

@@ -28,10 +28,10 @@
             return;
         }
 
-        // ✅ Set session login
+        // Set session login
         session.setAttribute("customer_id", String.valueOf(customerId));
 
-        // ✅ Redirect to room search or customer section
+        // Redirect to room search or customer section
         response.sendRedirect("customerSection.jsp?registered=true");
 
     } catch (Exception e) {

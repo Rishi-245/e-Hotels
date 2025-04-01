@@ -8,9 +8,8 @@
     String checkin = request.getParameter("checkin_date");
     String checkout = request.getParameter("checkout_date");
 
-    // ✅ Get customer ID from session
     String customerIdStr = (String) session.getAttribute("customer_id");
-    String sin = "123344556"; // default employee SIN for online bookings
+    String sin = "123456789"; // default employee SIN for online bookings
 
     if (customerIdStr == null) {
         out.println("<p style='color:red;'>You must be logged in to make a booking.</p>");

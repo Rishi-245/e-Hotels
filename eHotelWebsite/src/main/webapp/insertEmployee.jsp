@@ -26,7 +26,7 @@
 <%
     if ("POST".equalsIgnoreCase(request.getMethod())) {
         String sin = request.getParameter("sin");
-        int hotelId = Integer.parseInt(request.getParameter("hotel_id")); // ✅ FIXED HERE
+        int hotelId = Integer.parseInt(request.getParameter("hotel_id"));
         String fName = request.getParameter("f_name");
         String mName = request.getParameter("m_name");
         String lName = request.getParameter("l_name");
