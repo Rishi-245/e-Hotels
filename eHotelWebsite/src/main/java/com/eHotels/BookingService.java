@@ -39,7 +39,7 @@ public class BookingService {
                 // create new booking object
                 Booking booking = new Booking(
                         rs.getInt("booking_id"),
-                        rs.getString("customer_id"),
+                        rs.getInt("customer_id"),
                         rs.getString("SIN"),
                         rs.getInt("hotel_id"),
                         rs.getInt("room_number"),
@@ -143,4 +143,55 @@ public class BookingService {
 
         return message;
     }*/
+
+    public void addBooking(Booking booking) throws Exception {
+        // Step 1: Get the next available booking_id
+        int bookingId = getNextBookingID();
+
+        // Step 2: Insert booking into database
+        String sql = "INSERT INTO Booking (booking_id, customer_id, SIN, hotel_id, room_number, start_date, end_date, status) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
+                "ON CONFLICT (booking_id) DO NOTHING"; // Optional: prevents duplicate inserts
+
+        try (Connection con = new ConnectionDB().getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setInt(1, bookingId);
+            stmt.setInt(2, booking.getCustomerID());
+            stmt.setString(3, booking.getSIN());
+            stmt.setInt(4, booking.getHotelID());
+            stmt.setInt(5, booking.getRoomNumber());
+            stmt.setDate(6, booking.getStartDate());
+            stmt.setDate(7, booking.getEndDate());
+            stmt.setString(8, booking.getStatus());
+
+            stmt.executeUpdate();
+
+            System.out.println("Booking #" + bookingId + " added successfully.");
+
+        } catch (Exception e) {
+            throw new Exception("Error adding booking: " + e.getMessage());
+        }
+    }
+
+    public int getNextBookingID() throws Exception {
+        String sql = "SELECT COUNT(*) AS total FROM Booking";
+
+        try (Connection con = new ConnectionDB().getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getInt("total") + 1;
+            }
+
+        } catch (Exception e) {
+            throw new Exception("Error retrieving next booking ID: " + e.getMessage());
+        }
+
+        return 1; // Fallback if no bookings exist
+    }
+
+
+
 }

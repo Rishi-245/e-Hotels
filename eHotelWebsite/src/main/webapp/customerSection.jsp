@@ -66,24 +66,38 @@
 <!-- Room Search Section (Initially Hidden) -->
 <div id="roomSearchSection" style="display: none;">
     <h2>Search for Rooms</h2>
-    <form id="roomSearchForm">
-        <label>Start Date: <input type="date" id="checkinDate" required></label>
-        <label>End Date: <input type="date" id="checkoutDate" required></label>
+    <form id="roomSearchForm" method="post" action="searchRooms.jsp">
+        <label>Start Date: <input type="date" name="checkinDate" required></label>
+        <label>End Date: <input type="date" name="checkoutDate" required></label>
         <label>Hotel Chain:
-            <select id="hotelChain">
+            <select name="hotelChain">
                 <option value="">--Select Chain--</option>
+                <option value="Hilton">Hilton</option>
+                <option value="Marriott">Marriott</option>
+                <option value="Hyatt">Hyatt</option>
+                <option value="Accor">Accor</option>
+                <option value="Wyndham">Wyndham</option>
             </select>
         </label>
         <label>City:
-            <select id="city">
+            <select name="city">
                 <option value="">--Select City--</option>
+                <option value="Quebec City">Quebec City</option>
+                <option value="Edmonton">Edmonton</option>
+                <option value="Calgary">Calgary</option>
+                <option value="Toronto">Toronto</option>
+                <option value="Montreal">Montreal</option>
+                <option value="Vancouver">Vancouver</option>
+                <option value="Ottawa">Ottawa</option>
+                <option value="Halifax">Halifax</option>
             </select>
         </label>
+
         <label>Number of Rooms in Hotel (minimum):
-            <input type="number" id="numRooms" min="1" placeholder="e.g., 10">
+            <input type="number" name="numRooms" min="1" placeholder="e.g., 10">
         </label>
         <label>Hotel Rating (1-5):
-            <select id="category">
+            <select name="category">
                 <option value="">--Select Rating--</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -93,25 +107,23 @@
             </select>
         </label>
         <label>Room Capacity:
-            <input type="number" id="roomCapacity" min="1" placeholder="Enter desired capacity">
+            <input type="number" name="roomCapacity" min="1" placeholder="Enter desired capacity">
         </label>
-        <label>Budget (Price Per Night Range): <input type="text" id="priceRange"></label>
+        <label>Budget (Price Per Night Range): <input type="text" name="priceRange"></label>
         <label>Extendable:
-            <select id="extendableOption">
+            <select name="extendable">
                 <option value="">--Select--</option>
                 <option value="true">True</option>
                 <option value="false">False</option>
             </select>
         </label>
         <label>View Type:
-            <select id="viewType">
+            <select name="viewType">
                 <option value="">--Select--</option>
                 <option value="Sea View">Sea View</option>
                 <option value="Mountain View">Mountain View</option>
             </select>
         </label>
-        <input type="hidden" id="selectedRoomNumber">
-        <input type="hidden" id="selectedHotelId">
         <button type="submit">Search for Rooms</button>
     </form>
     <div id="availableRooms"></div>
@@ -133,5 +145,3 @@
         }
     });
 </script>
-
-

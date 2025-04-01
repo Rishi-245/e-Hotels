@@ -155,7 +155,7 @@
         <% if ("inperson".equals(bookingType)) { %>
             <div id="inPersonBookingSection">
                 <h3>In-Person Renting</h3>
-                <form method="post">
+                <form id="customerForm" action="createCustomer2.jsp" method="post">
                     <input type="hidden" name="employeeId" value="<%= employeeId %>" />
                     <input type="hidden" name="bookingType" value="inperson" />
 
@@ -172,26 +172,64 @@
                             <option value="Driving License">Driving License</option>
                         </select>
                     </label>
-                    <label>Enter ID #: <input type="text" name="ipIdNumber" required></label>
-
                     <label>Current Date: <input type="date" name="ipDate" value="<%= new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date()) %>" required></label>
                     <label>End Date: <input type="date" name="ipEndDate" required></label>
-
-                    <label>Budget (Max Price Per Night): <input type="number" name="ipBudget" min="0"></label>
-                    <button type="submit">Search for Rooms</button>
+                    <button type="submit">Sign In/Register</button>
                 </form>
-
                 <!-- Available Rooms -->
                 <% if (!availableRooms.isEmpty()) { %>
-                    <h4>Available Rooms in Your Hotel</h4>
-                    <ul>
-                        <% for (Room room : availableRooms) { %>
-                            <li>Room <%= room.getRoomNumber() %> - $<%= room.getPrice() %>/night</li>
-                        <% } %>
-                    </ul>
-                <% } else if (request.getParameter("ipBudget") != null) { %>
-                    <p>No rooms available under the selected budget.</p>
+                    <div id="roomSearchSection" style="display: none;">
+                        <h4>Available Rooms in Your Hotel</h4>
+                        <label>Current Date: <input type="date" name="ipDate" value="<%= new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date()) %>" required></label>
+                        <label>End Date: <input type="date" name="ipEndDate" required></label>
+                        <table border="1" cellpadding="8" cellspacing="0" style="margin-top:10px; width:100%; max-width:800px;">
+                            <thead>
+                                <tr>
+                                    <th>Room</th>
+                                    <th>Price</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for (Room room : availableRooms) { %>
+                                    <tr>
+                                        <td><%= room.getRoomNumber() %></td>
+                                        <td><%= room.getPrice() %>/night</td>
+                                        <td>
+                                            <form method="post" action="createRenting.jsp">
+                                                <input type="hidden" name="employeeId" value="<%= employeeId %>">
+                                                <input type="hidden" name="hotelId" value="<%= room.getHotelID() %>">
+                                                <input type="hidden" name="roomNumber" value="<%= room.getRoomNumber() %>">
+                                                <button type="submit">Confirm</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } else { %>
+                    <p>No rooms available.</p>
                 <% } %>
+
+                <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const isRegistered = urlParams.get("registered");
+                    const errorMsg = urlParams.get("error");
+
+                    if (isRegistered) {
+                        document.getElementById("customerForm").style.display = "none";
+                        document.getElementById("roomSearchSection").style.display = "block";
+                    }
+
+                    if (errorMsg) {
+                        alert("Error: " + decodeURIComponent(errorMsg));
+                    }
+                });
+                </script>
+
+
             </div>
         <% } %>
     <% } else if (employeeId != null) { %>
@@ -199,84 +237,10 @@
     <% } %>
  </div>
 
-
- <!-- Admin Section -->
- <div class="section" id="adminSection">
-   <h2>Admin Panel</h2>
-
-   <!-- Step One: Admin ID Entry -->
-   <form id="adminLoginForm">
-     <label>Enter Admin ID:
-       <input type="text" id="adminIdInput" required />
-     </label>
-     <button type="submit">Enter</button>
-   </form>
-
-   <!-- Admin Dashboard Area -->
-   <div id="adminDashboard" style="display: none; margin-top: 20px;">
-     <p id="adminWelcomeText"></p>
-
-     <label for="adminActionSelect"><strong>Select Management Section:</strong></label>
-     <select id="adminActionSelect">
-       <option value="">-- Select Section --</option>
-       <option value="customers">Manage Customers</option>
-       <option value="employees">Manage Employees</option>
-       <option value="hotels">Manage Hotels</option>
-       <option value="rooms">Manage Rooms</option>
-     </select>
-
-     <div id="adminActionArea" style="margin-top: 20px;"></div>
-     <!-- Room management options (initially hidden) -->
-       <div id="roomManagementOptions" style="display: none;">
-         <p><strong>Choose Room Management Action:</strong></p>
-         <div style="display: flex; gap: 20px;">
-           <label><input type="radio" name="roomAction" value="insert"> Insert Room</label>
-           <label><input type="radio" name="roomAction" value="delete"> Delete Room</label>
-           <label><input type="radio" name="roomAction" value="update"> Update Room</label>
-         </div>
-       </div>
-
-       <!-- Placeholder where the selected form (insert/delete/update) will go -->
-       <div id="roomActionFormArea" style="margin-top: 20px;"></div>
-   </div>
- </div>
-
-
- <div id="roomPopup" style="display: none; position: fixed; top: 10%; left: 50%; transform: translateX(-50%); background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 0 15px rgba(0,0,0,0.35); z-index: 1000; width: 600px; max-width: 95%; max-height: 80vh; overflow-y: auto;">
-   <button onclick="document.getElementById('roomPopup').style.display='none'" style="position:absolute; top:5px; left:400px; background:none; border:none; font-size:28px; cursor:pointer; color:black;">&times;</button>
-
-   <h3>Room Info</h3>
-   <p><strong>Hotel Chain:</strong> <span id="popupHotel"></span></p>
-   <p><strong>City:</strong> <span id="popupCity"></span></p>
-   <p><strong>Room Number:</strong> <span id="popupRoom"></span></p>
-   <p><strong>Price:</strong> $<span id="popupPrice"></span>/night</p>
-   <p><strong>Rating:</strong> <span id="popupRating"></span>/5</p>
-   <p><strong>Extendable:</strong> <span id="popupExtendable"></span></p>
-   <p><strong>Capacity:</strong> <span id="popupCapacity"></span> guests</p>
-   <p><strong>Total Rooms in Hotel:</strong> <span id="popupNumRooms"></span></p>
-
-   <h4 style="margin-top: 20px;">Payment Info:</h4>
-   <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
-     <div>
-       <label for="cardName"><strong>Credit Card Name</strong></label><br>
-       <input type="text" id="cardName" required style="width: 100%;" />
-     </div>
-     <div>
-       <label for="cardNumber"><strong>Card Number</strong></label><br>
-       <input type="text" id="cardNumber" required style="width: 100%;" />
-     </div>
-     <div>
-       <label for="expiryDate"><strong>Expiry Date</strong></label><br>
-       <input type="month" id="expiryDate" required style="width: 100%;" />
-     </div>
-     <div>
-       <label for="cvv"><strong>CVV</strong></label><br>
-       <input type="text" id="cvv" required style="width: 100%;" />
-     </div>
-   </div>
-
-   <button id="confirmBookingBtn" style="margin-top: 15px;">Confirm</button>
- </div>
+<!-- Admin Section -->
+<div class="section" id="adminSection">
+    <jsp:include page="adminSection.jsp" />
+</div>
 
 <script src="script.js"></script>
 </body>

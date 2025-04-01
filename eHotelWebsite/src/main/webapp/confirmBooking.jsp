@@ -19,7 +19,7 @@
             stmt.close();
 
             // Redirect back to main page with employee ID
-            response.sendRedirect("employeePanel.jsp?employeeId=" + employeeId + "&bookingType=online");
+            response.sendRedirect("index.jsp?employeeId=" + employeeId + "&bookingType=online");
         } catch (Exception e) {
             out.println("Error: " + e.getMessage());
         } finally {

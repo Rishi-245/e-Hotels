@@ -1,5 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.*, com.eHotels.Room, com.eHotels.RoomService" %>
+<%@ page import="com.eHotels.RoomService" %>
+<%@ page import="com.eHotels.HotelService" %>
+<%@ page import="com.eHotels.HotelChainService" %>
+<%@ page import="com.eHotels.Room" %>
+<%@ page import="java.util.List" %>
 
 <%
     // Get parameters from form
@@ -15,8 +20,21 @@
     String viewType = request.getParameter("viewType");
 
     // Call RoomService to get results
+    List<Room> availableRooms = null;
+
     RoomService roomService = new RoomService();
-    List<Room> availableRooms = roomService.searchRooms(checkinDate, checkoutDate, hotelChain, city, numRooms, category, roomCapacity, priceRange, extendable, viewType);
+    try {
+        availableRooms = roomService.searchRooms(
+            checkinDate, checkoutDate, hotelChain, city, numRooms,
+            category, roomCapacity, priceRange, extendable, viewType
+        );
+    } catch (Exception e) {
+        e.printStackTrace();
+        out.println("<p style='color:red;'>Error: " + e.getMessage() + "</p>");
+    }
+
+    HotelService hotelService = new HotelService();
+    HotelChainService hotelChainService = new HotelChainService();
 %>
 
 <!DOCTYPE html>
@@ -34,7 +52,7 @@
     <% } else { %>
         <table border="1">
             <tr>
-                <th>Hotel</th>
+                <th>Hotel Chain</th>
                 <th>City</th>
                 <th>Room Capacity</th>
                 <th>Price Per Night</th>
@@ -44,16 +62,25 @@
             </tr>
             <% for (Room room : availableRooms) { %>
                 <tr>
-                    <td><%= room.getHotelID() %></td>  <!-- Display Hotel ID for now -->
-                    <td>N/A</td>  <!-- Fix: No city info in Room.java -->
+                    <td><%= room.getHotelChainName() != null ? room.getHotelChainName() : "N/A" %></td>
+                    <td><%= room.getHotelAddress() != null ? room.getHotelAddress() : "N/A" %></td>
                     <td><%= room.getCapacity() %></td>
                     <td><%= room.getPrice() %></td>
                     <td><%= room.isExtendable() ? "Yes" : "No" %></td>
                     <td><%= room.getViewType() %></td>
-                    <td><button>Book</button></td>
+                    <td>
+                        <form action="createBooking.jsp" method="post">
+                            <input type="hidden" name="hotel_id" value="<%= room.getHotelID() %>" />
+                            <input type="hidden" name="room_number" value="<%= room.getRoomNumber() %>" />
+                            <input type="hidden" name="checkin_date" value="<%= checkinDate %>" />
+                            <input type="hidden" name="checkout_date" value="<%= checkoutDate %>" />
+                            <input type="submit" value="Book" />
+                        </form>
+                    </td>
                 </tr>
             <% } %>
         </table>
     <% } %>
 </body>
 </html>
+

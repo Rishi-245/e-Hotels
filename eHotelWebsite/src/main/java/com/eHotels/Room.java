@@ -8,6 +8,9 @@ public class Room {
     private int capacity;
     private String view_type;
 
+    private String hotelChainName;
+    private String hotelAddress;
+
     public Room(int hotel_id, int room_number, boolean extendable, double price, int capacity, String view_type) {
         this.hotel_id = hotel_id;
         this.room_number = room_number;
@@ -23,4 +26,10 @@ public class Room {
     public double getPrice() { return price; }
     public int getCapacity() { return capacity; }
     public String getViewType() { return view_type; }
+
+    public String getHotelChainName() { return hotelChainName; }
+    public String getHotelAddress() { return hotelAddress; }
+    public void setHotelChainName(String hotelChainName) { this.hotelChainName = hotelChainName; }
+    public void setHotelAddress(String hotelAddress) { this.hotelAddress = hotelAddress; }
 }
+

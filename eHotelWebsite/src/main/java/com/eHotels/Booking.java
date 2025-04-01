@@ -5,7 +5,7 @@ import java.sql.Date;
 public class Booking {
 
     private int booking_id;
-    private String customer_id;
+    private int customer_id;
     private String SIN;
     private int hotel_id;
     private int room_number;
@@ -16,7 +16,7 @@ public class Booking {
     /**
      * Constructor
      */
-    public Booking(int booking_id, String customer_id, String SIN, int hotel_id, int room_number, Date booking_date, Date start_date, Date end_date, String status) {
+    public Booking(int booking_id, int customer_id, String SIN, int hotel_id, int room_number, Date booking_date, Date start_date, Date end_date, String status) {
         this.booking_id = booking_id;
         this.customer_id = customer_id;
         this.SIN = SIN;
@@ -31,7 +31,7 @@ public class Booking {
 
     /* Getters */
     public int getBookingID() { return this.booking_id; }
-    public String getCustomerID() { return this.customer_id; }
+    public int getCustomerID() { return this.customer_id; }
     public String getSIN() { return this.SIN; }
     public int getHotelID() { return this.hotel_id; }
     public int getRoomNumber() { return this.room_number; }
@@ -42,7 +42,7 @@ public class Booking {
 
     /* Setters */
     public void setBookingID(int booking_id) { this.booking_id = booking_id; }
-    public void setCustomerID(String customer_id) { this.customer_id = customer_id; }
+    public void setCustomerID(int customer_id) { this.customer_id = customer_id; }
     public void setSIN(String SIN) { this.SIN = SIN; }
     public void setHotelID(int hotel_id) { this.hotel_id = hotel_id; }
     public void setRoomNumber(int room_number) { this.room_number = room_number; }
